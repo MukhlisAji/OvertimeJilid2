@@ -1,6 +1,6 @@
 <%-- 
-    Document   : PageManager
-    Created on : Dec 14, 2018, 9:12:14 AM
+    Document   : PageEmployee
+    Created on : Dec 14, 2018, 11:19:22 AM
     Author     : Mukhlish
 --%>
 
@@ -94,11 +94,12 @@
                 $('#InformationproModalftblack').modal('show');
             });
         </script>
-                <script type="text/javascript">
+        <script type="text/javascript">
             $(document).ready(function () {
                 $('[id="overtimes"]').click(function () {
                     $.get("../overtime", function (HASIL, status) {
                         $("#overtimeData").html(HASIL);
+                        $("#overtimeData").modal('show');
                     });
                 });
             });
@@ -300,7 +301,7 @@
                                                     <li class="nav-item">
                                                         <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="nav-link dropdown-toggle">
                                                             <i class="fa fa-user adminpro-user-rounded header-riht-inf" aria-hidden="true"></i>
-                                                            <span class="admin-name"> <%= Nama %> </span>
+                                                            <span class="admin-name"> <%= Nama%> </span>
                                                             <i class="fa fa-angle-down adminpro-icon adminpro-down-arrow"></i>
                                                         </a>
                                                         <ul role="menu" class="dropdown-header-top author-log dropdown-menu animated zoomIn">
@@ -313,7 +314,7 @@
                                                             <li><a href="#"><span class="fa fa-cog author-log-ic"></span>Settings</a>
                                                             </li>
                                                             <li><a href="Login.jsp"><span class="fa fa-lock author-log-ic"></span>Log Out</a>
-                                                            <% session.removeAttribute("dataEmployee");%>
+                                                                <% session.removeAttribute("dataEmployee");%>
                                                             </li>
                                                         </ul>
                                                     </li>
@@ -326,8 +327,8 @@
                                                                 <li><a data-toggle="tab" href="#Projects">Activity</a>
                                                                 </li>
                                                                 <li><a data-t
-                                                            <li><a href="oggle="tab" href="#Settings">Settings</a>
-                                                                </li>
+                                                                       <li><a href="oggle="tab" href="#Settings">Settings</a>
+                                                                        </li>
                                                             </ul>
 
                                                             <div class="tab-content custom-bdr-nt">
@@ -861,3 +862,4 @@
     </body>
 
 </html>
+

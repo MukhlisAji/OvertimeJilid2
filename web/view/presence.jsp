@@ -1,21 +1,30 @@
 <%-- 
+    Document   : presence
+    Created on : Dec 14, 2018, 1:56:47 PM
+    Author     : Mukhlish
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%-- 
     Document   : PageManager
     Created on : Dec 14, 2018, 9:12:14 AM
     Author     : Mukhlish
 --%>
 
 <%@page import="entities.Employee"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<script type="text/javascript">
+    $(window).on('load', function () {
+        $('#InformationproModalftblack').modal('show');
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[id="Checkut"]').click(function () {
+            $('#keluar').modal('show');
+        });
+    });
+</script>
 
-<%
-    String Nama = "";
-    if (session.getAttribute("dataEmployee") != null) {
-        Employee e = (Employee) session.getAttribute("dataEmployee");
-        Nama = e.getName();
-    } else {
-        response.sendRedirect("Login.jsp");
-    }
-%>
 <!doctype html>
 <html class="no-js" lang="en">
     <head>
@@ -87,21 +96,10 @@
                     ============================================ -->
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
         <script type="text/javascript">
-            $(window).on('load', function () {
-                $('#InformationproModalftblack').modal('show');
-            });
-        </script>
-                <script type="text/javascript">
-            $(document).ready(function () {
-                $('[id="overtimes"]').click(function () {
-                    $.get("../overtime", function (HASIL, status) {
-                        $("#overtimeData").html(HASIL);
-                    });
-                });
-            });
+    $(window).on('load', function () {
+        $('#InformationproModalftblack').modal('show');
+    });
         </script>
     </head>
 
@@ -112,9 +110,9 @@
 
         <div class="left-sidebar-pro">
             <nav id="sidebar" class="">
-                <div class="sidebar-header"><br><br>
-                    <a href="index.html"><img style="width: 120px;" class="main-logo" src="https://www.metrodata.co.id/web/images/business/2014-08-20-112626.png" alt="" /></a>
-                    <strong><img src="img/logo/logosn.png" alt="" /></strong><br><br>
+                <div class="sidebar-header">
+                    <a href="index.html"><img class="main-logo" src="" alt="" /></a>
+                    <strong><img src="img/logo/logosn.png" alt="" /></strong>
                 </div>
                 <div class="left-custom-menu-adp-wrap comment-scrollbar">
                     <nav class="sidebar-nav left-sidebar-menu-pro">
@@ -124,7 +122,7 @@
                                 <ul class="submenu-angle" aria-expanded="false">
                                     <li><a title="Inbox" href="mailbox.html"><i class="fa fa-inbox sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Profile</span></a></li>
                                     <li><a title="View Mail" href="mailbox-view.html"><i class="fa fa-television sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Presence</span></a></li>
-                                    <li><a id="overtimes" title="overtime data"><i class="fa fa-paper-plane sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro" >Overtime</span></a></li>
+                                    <li><a title="Compose Mail" href="mailbox-compose.html"><i class="fa fa-paper-plane sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Overtime</span></a></li>
                                 </ul>
                             </li>
                             <li>
@@ -300,7 +298,7 @@
                                                     <li class="nav-item">
                                                         <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="nav-link dropdown-toggle">
                                                             <i class="fa fa-user adminpro-user-rounded header-riht-inf" aria-hidden="true"></i>
-                                                            <span class="admin-name"> <%= Nama %> </span>
+                                                            <span class="admin-name">Advanda Cro</span>
                                                             <i class="fa fa-angle-down adminpro-icon adminpro-down-arrow"></i>
                                                         </a>
                                                         <ul role="menu" class="dropdown-header-top author-log dropdown-menu animated zoomIn">
@@ -312,8 +310,7 @@
                                                             </li>
                                                             <li><a href="#"><span class="fa fa-cog author-log-ic"></span>Settings</a>
                                                             </li>
-                                                            <li><a href="Login.jsp"><span class="fa fa-lock author-log-ic"></span>Log Out</a>
-                                                            <% session.removeAttribute("dataEmployee");%>
+                                                            <li><a href="login.html"><span class="fa fa-lock author-log-ic"></span>Log Out</a>
                                                             </li>
                                                         </ul>
                                                     </li>
@@ -325,8 +322,7 @@
                                                                 </li>
                                                                 <li><a data-toggle="tab" href="#Projects">Activity</a>
                                                                 </li>
-                                                                <li><a data-t
-                                                            <li><a href="oggle="tab" href="#Settings">Settings</a>
+                                                                <li><a data-toggle="tab" href="#Settings">Settings</a>
                                                                 </li>
                                                             </ul>
 
@@ -775,7 +771,20 @@
                 <!-- Mobile Menu end -->
             </div>
 
-            <div id="overtimeData"></div>
+
+
+            <div class="button-ad-wrap mg-tb-30">
+                <div class="alert-title">
+
+                </div>
+                <div class="button-ap-list responsive-btn">
+                    <div class="button-style-four btn-mg-b-10">
+                        <center><button type="button" name="CheckOut" id="checkut" class="btn btn-custon-four btn-primary btn-lg">Check Out</button></center> 
+                    </div>
+                </div>
+
+            </div>
+
 
             <!-- Static Table Start -->
             <!-- Static Table End -->
@@ -861,3 +870,5 @@
     </body>
 
 </html>
+
+

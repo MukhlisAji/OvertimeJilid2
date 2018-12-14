@@ -10,6 +10,7 @@ import controllers.EmployeeControllerInterface;
 import daos.DAOInterface;
 import daos.GeneralDAO;
 import entities.Employee;
+import entities.Role;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -54,15 +55,16 @@ public class data extends HttpServlet {
             String passwordEncryp = employee.getPassword();
             if (BCrypt.checkpw(password, passwordEncryp)) {
                 String Status = employee.getRoleId().getRoleName();
+                Role role = employee.getRoleId();
                 if (Status.matches("Manager")) {
                     session.setAttribute("dataEmployee", employee);
                     response.sendRedirect("view/PageManager.jsp");
                 } else if (Status.matches("Admin")) {
                     session.setAttribute("dataEmployee", employee);
                     response.sendRedirect("view/register.jsp");
-                } else {
+                } else if(Status.matches("Employee")){
                     session.setAttribute("dataEmployee", employee);
-                    response.sendRedirect("view/modals.jsp");
+                    response.sendRedirect("view/PageEmployee.jsp");
                 }
             } else {
                 session.setAttribute("dataEmployee", employee);
