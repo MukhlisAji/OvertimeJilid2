@@ -20,4 +20,5 @@ public interface EmployeeControllerInterface {
     public boolean update(String nik, String name, String email, String password, String phoneNumber, String hireDate, String jobTitle, String salary, String isDelete, String roleId, String managerId);
     public boolean delete(String id);
     public Object getMax(String field);
+    public List<Object> duplicatManagerId();
 }

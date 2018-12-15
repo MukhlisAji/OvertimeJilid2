@@ -19,4 +19,5 @@ public interface DAOInterface {
     public Object login(Object entities, String Name);
     public boolean updateStatus(String Status, String oldStatus);
     public Object getMax(Object entities, Object field);
+    public List<Object> duplicatManagerId(Object entities);
 }

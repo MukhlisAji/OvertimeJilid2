@@ -62,4 +62,9 @@ public class GeneralDAO implements DAOInterface {
     public Object getMax(Object entities, Object field) {
          return this.fdao.getMax(entities, field);
     }
+    
+    @Override
+   public List<Object> duplicatManagerId(Object entities) {
+         return this.fdao.duplicatManagerId(entities);
+    }
 }

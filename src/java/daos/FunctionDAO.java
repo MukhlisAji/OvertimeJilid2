@@ -209,4 +209,24 @@ public class FunctionDAO {
         }
         return object;
     }
+    public List<Object> duplicatManagerId(Object entities){
+        List<Object> object = new ArrayList<>();
+        String className = entities.getClass().getSimpleName();
+        String query = ("SELECT Distinct managerId FROM " + className);
+
+        try {
+            session = factory.openSession();
+            transaction = session.beginTransaction();
+            object = session.createQuery(query).list();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return object;
+    }
 }

@@ -5,31 +5,20 @@
  */
 package servlet;
 
-import controllers.EmployeeController;
-import controllers.EmployeeControllerInterface;
-import daos.DAOInterface;
-import daos.GeneralDAO;
-import entities.Employee;
-import entities.Role;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import jbcrypt.BCrypt;
-import org.hibernate.SessionFactory;
-import tools.HibernateUtil;
 
 /**
  *
- * @author Mukhlish
+ * @author tikamhrdk
  */
-@WebServlet(name = "data", urlPatterns = {"/data"})
-public class data extends HttpServlet {
+@WebServlet(name = "DeleteEmployee", urlPatterns = {"/DeleteEmployee"})
+public class DeleteEmployee extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,37 +32,18 @@ public class data extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String nik = request.getParameter("NIK");
-        String password = request.getParameter("passwordEmp");
-        RequestDispatcher dispatcher = null;
-        HttpSession session = request.getSession();
         try (PrintWriter out = response.getWriter()) {
-            SessionFactory factory = HibernateUtil.getSessionFactory();
             /* TODO output your page here. You may use following sample code. */
-            EmployeeControllerInterface eci = new EmployeeController(factory);
-            Employee employee = eci.getByNIK(nik);
-            String passwordEncryp = employee.getPassword();
-            if (BCrypt.checkpw(password, passwordEncryp)) {
-                String Status = employee.getRoleId().getRoleName();
-                Role role = employee.getRoleId();
-                if (Status.matches("Manager")) {
-                    session.setAttribute("dataEmployee", employee);
-                    response.sendRedirect("view/PageManager.jsp");
-                } else if (Status.matches("Admin")) {
-                    session.setAttribute("dataEmployee", employee);
-                    response.sendRedirect("view/PageAdmin.jsp");
-                } else if(Status.matches("Employee")){
-                    session.setAttribute("dataEmployee", employee);
-                    response.sendRedirect("view/PageEmployee.jsp");
-                }
-            } else {
-                session.setAttribute("dataEmployee", employee);
-                dispatcher.include(request, response);
-                response.sendRedirect("view/register.jsp");
-                out.print(BCrypt.checkpw(password, passwordEncryp));
-            }
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet DeleteEmployee</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet DeleteEmployee at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
