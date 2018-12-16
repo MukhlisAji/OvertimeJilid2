@@ -11,6 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import tools.HibernateUtil;
+
 /**
  *
  * @author Mukhlish
@@ -188,11 +189,11 @@ public class FunctionDAO {
         }
         return object;
     }
-    
-    public Object getMax(Object entities, Object field){
+
+    public Object getMax(Object entities, Object field) {
         Object object = new Object();
         String className = entities.getClass().getSimpleName();
-        String query = ("SELECT Max("+ field +")+1 FROM " + className);
+        String query = ("SELECT Max(" + field + ") FROM " + className);
 
         try {
             session = factory.openSession();
@@ -209,4 +210,107 @@ public class FunctionDAO {
         }
         return object;
     }
+
+    public Object getMaxPresence(Object entities, Object nik) {
+        Object object = new Object();
+        String className = entities.getClass().getSimpleName();
+        String query = ("SELECT Max(presenceId) FROM " + className + " where nik = '" + nik + "'");
+
+        try {
+            session = factory.openSession();
+            transaction = session.beginTransaction();
+            object = session.createQuery(query).uniqueResult();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return object;
+    }
+
+    public Object cekPresence(Object entities, Object nik, Object dates) {
+        Object object = new Object();
+        String className = entities.getClass().getSimpleName();
+        String query = ("SELECT Max(presenceId) FROM " + className + " where nik = '" + nik + "' and presenceDate = '" + dates + "'");
+
+        try {
+            session = factory.openSession();
+            transaction = session.beginTransaction();
+            object = session.createQuery(query).uniqueResult();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return object;
+    }
+
+    public List<Object> duplicatManagerId(Object entities) {
+        List<Object> object = new ArrayList<>();
+        String className = entities.getClass().getSimpleName();
+        String query = ("SELECT Distinct managerId FROM " + className);
+
+        try {
+            session = factory.openSession();
+            transaction = session.beginTransaction();
+            object = session.createQuery(query).list();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return object;
+    }
+    
+    public List<Object> byNikAndDate (Object Nik, Object mounth) {
+        List<Object> object = new ArrayList<>();
+        String query = ("from Presence where nik = '"+ Nik + "' and presenceDate like '_____" + mounth + "%'");
+
+        try {
+            session = factory.openSession();
+            transaction = session.beginTransaction();
+            object = session.createQuery(query).list();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return object;
+    }
+    public List<Object> OTbyNikAndDate (Object Nik, Object mounth) {
+        List<Object> object = new ArrayList<>();
+        String query = ("from Overtime where nik = '"+ Nik + "' and presenceDate like '_____" + mounth + "%'");
+
+        try {
+            session = factory.openSession();
+            transaction = session.beginTransaction();
+            object = session.createQuery(query).list();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        } finally {
+            session.close();
+        }
+        return object;
+    }
+
 }

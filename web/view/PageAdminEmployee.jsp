@@ -324,6 +324,7 @@
                                         <th data-field="Duration" data-editable="true">Duration</th>
                                         <th data-field="Fee" data-editable="true">Fee</th>
                                         <th data-field="Status" data-editable="true">Status</th>
+                                        <th data-field="File" data-editable="true">Timesheet</th>
                                         <th data-field="action">Action</th>
                                     </tr>
                                 </thead>
@@ -344,6 +345,7 @@
                                         <td><%= o.getOtDuration()%></td>
                                         <td><%= o.getFee()%></td>
                                         <td><%= o.getStatus()%></td>
+                                        <td><%= o.getTsFile()%></td>
                                         <td class="datatable-ct"><i class="fa fa-check"></i>
                                     </tr>
 

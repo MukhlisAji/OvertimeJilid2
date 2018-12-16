@@ -4,14 +4,49 @@
     Author     : Mukhlish
 --%>
 
+<%@page import="java.sql.Timestamp"%>
+<%@page import="java.util.List"%>
+<%@page import="daos.GeneralDAO"%>
+<%@page import="tools.HibernateUtil"%>
+<%@page import="daos.DAOInterface"%>
+<%@page import="org.hibernate.SessionFactory"%>
+<%@page import="entities.Overtime"%>
+<%@page import="entities.Presence"%>
+<%@page import="controllers.OvertimeControllerInterface"%>
+<%@page import="controllers.OvertimeController"%>
+<%@page import="controllers.PresenceController"%>
+<%@page import="controllers.PresenceControllerInterface"%>
 <%@page import="entities.Employee"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
-    String Nama = "";
+    String Nama = "", nik = "";
+    int duration = 0;
     if (session.getAttribute("dataEmployee") != null) {
         Employee e = (Employee) session.getAttribute("dataEmployee");
         Nama = e.getName();
+        nik = e.getNik();
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        PresenceControllerInterface pci = new PresenceController(sessionFactory);
+        DAOInterface daoi = new GeneralDAO(sessionFactory);
+        String id = String.valueOf(daoi.getMaxPresence(new Presence(), nik));
+        Object o = pci.getById(id);
+        List<Presence> al = (List<Presence>) o;
+        Presence p = null;
+        for (int i = 0; i < al.size(); i++) {
+            System.out.println(al.get(i));
+            p = al.get(i);
+        }
+        String s = String.valueOf(p.getCheckIn());
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String dates = String.valueOf(timestamp);
+        String times = dates.substring(11, 13);
+
+        System.out.println(times);
+        int f = Integer.parseInt(times);
+        duration = f - 17;
+        System.out.println(duration);
     } else {
         response.sendRedirect("Login.jsp");
     }
@@ -69,6 +104,8 @@
         <link rel="stylesheet" href="css/calendar/fullcalendar.print.min.css">
         <!-- x-editor CSS
                     ============================================ -->
+        <link rel="stylesheet" href="css/form/all-type-forms.css">
+
         <link rel="stylesheet" href="css/editor/select2.css">
         <link rel="stylesheet" href="css/editor/datetimepicker.css">
         <link rel="stylesheet" href="css/editor/bootstrap-editable.css">
@@ -121,24 +158,13 @@
                     <nav class="sidebar-nav left-sidebar-menu-pro">
                         <ul class="metismenu" id="menu1">
                             <li>
-                                <a class="has-arrow" href="mailbox.html" aria-expanded="false"><i class="fa big-icon fa-envelope icon-wrap"></i> <span class="mini-click-non">Employee</span></a>
+                                <a class="has-arrow" href="mailbox.html" aria-expanded="false"><i class="fa big-icon fa-envelope icon-wrap"></i> <span class="mini-click-non">Workspace</span></a>
                                 <ul class="submenu-angle" aria-expanded="false">
-                                    <li><a title="Inbox" href="mailbox.html"><i class="fa fa-inbox sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Profile</span></a></li>
-                                    <li><a title="View Mail" href="mailbox-view.html"><i class="fa fa-television sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Presence</span></a></li>
+                                    <li><a title="My Profil" href="mailbox.html"><i class="fa fa-inbox sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Profile</span></a></li>
+                                    <li><a title="My Presence" href="mailbox-view.html"><i class="fa fa-television sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Presence</span></a></li>
                                     <li><a id="overtimes" title="overtime data"><i class="fa fa-paper-plane sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro" >Overtime</span></a></li>
                                 </ul>
                             </li>
-                            <li>
-                            <li id="removable">
-                                <a class="has-arrow" href="#" aria-expanded="false"><i class="fa big-icon fa-files-o icon-wrap"></i> <span class="mini-click-non">Pages</span></a>
-                                <ul class="submenu-angle" aria-expanded="false">
-                                    <li><a title="Login" href="login.html"><i class="fa fa-hand-rock-o sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">Login</span></a></li>
-                                    <li><a title="Register" href="register.html"><i class="fa fa-plane sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">Register</span></a></li>
-                                    <li><a title="Lock" href="lock.html"><i class="fa fa-file sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">Lock</span></a></li>
-                                    <li><a title="Password Recovery" href="password-recovery.html"><i class="fa fa-wheelchair sub-icon-mg" aria-hidden="true"></i><span class="mini-sub-pro">Password Recovery</span></a></li>
-                                </ul>
-                            </li>
-                            <li><a title="Landing Page" href="#" aria-expanded="false"><i class="fa fa-bookmark icon-wrap sub-icon-mg" aria-hidden="true"></i> <span class="mini-click-non">Landing Page</span></a></li>
                         </ul>
                     </nav>
                 </div>
@@ -177,127 +203,6 @@
                                         <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
                                             <div class="header-right-info">
                                                 <ul class="nav navbar-nav mai-top-nav header-right-menu">
-                                                    <li class="nav-item dropdown">
-                                                        <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="nav-link dropdown-toggle"><i class="fa fa-envelope-o adminpro-chat-pro" aria-hidden="true"></i><span class="indicator-ms"></span></a>
-                                                        <div role="menu" class="author-message-top dropdown-menu animated zoomIn">
-                                                            <div class="message-single-top">
-                                                                <h1>Message</h1>
-                                                            </div>
-                                                            <ul class="message-menu">
-                                                                <li>
-                                                                    <a href="#">
-                                                                        <div class="message-img">
-                                                                            <img src="img/contact/1.jpg" alt="">
-                                                                        </div>
-                                                                        <div class="message-content">
-                                                                            <span class="message-date">16 Sept</span>
-                                                                            <h2>Advanda Cro</h2>
-                                                                            <p>Please done this project as soon possible.</p>
-                                                                        </div>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        <div class="message-img">
-                                                                            <img src="img/contact/4.jpg" alt="">
-                                                                        </div>
-                                                                        <div class="message-content">
-                                                                            <span class="message-date">16 Sept</span>
-                                                                            <h2>Sulaiman din</h2>
-                                                                            <p>Please done this project as soon possible.</p>
-                                                                        </div>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        <div class="message-img">
-                                                                            <img src="img/contact/3.jpg" alt="">
-                                                                        </div>
-                                                                        <div class="message-content">
-                                                                            <span class="message-date">16 Sept</span>
-                                                                            <h2>Victor Jara</h2>
-                                                                            <p>Please done this project as soon possible.</p>
-                                                                        </div>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        <div class="message-img">
-                                                                            <img src="img/contact/2.jpg" alt="">
-                                                                        </div>
-                                                                        <div class="message-content">
-                                                                            <span class="message-date">16 Sept</span>
-                                                                            <h2>Victor Jara</h2>
-                                                                            <p>Please done this project as soon possible.</p>
-                                                                        </div>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                            <div class="message-view">
-                                                                <a href="#">View All Messages</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="nav-item"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="nav-link dropdown-toggle"><i class="fa fa-bell-o" aria-hidden="true"></i><span class="indicator-nt"></span></a>
-                                                        <div role="menu" class="notification-author dropdown-menu animated zoomIn">
-                                                            <div class="notification-single-top">
-                                                                <h1>Notifications</h1>
-                                                            </div>
-                                                            <ul class="notification-menu">
-                                                                <li>
-                                                                    <a href="#">
-                                                                        <div class="notification-icon">
-                                                                            <i class="fa fa-check adminpro-checked-pro admin-check-pro" aria-hidden="true"></i>
-                                                                        </div>
-                                                                        <div class="notification-content">
-                                                                            <span class="notification-date">16 Sept</span>
-                                                                            <h2>Advanda Cro</h2>
-                                                                            <p>Please done this project as soon possible.</p>
-                                                                        </div>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        <div class="notification-icon">
-                                                                            <i class="fa fa-cloud adminpro-cloud-computing-down" aria-hidden="true"></i>
-                                                                        </div>
-                                                                        <div class="notification-content">
-                                                                            <span class="notification-date">16 Sept</span>
-                                                                            <h2>Sulaiman din</h2>
-                                                                            <p>Please done this project as soon possible.</p>
-                                                                        </div>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        <div class="notification-icon">
-                                                                            <i class="fa fa-eraser adminpro-shield" aria-hidden="true"></i>
-                                                                        </div>
-                                                                        <div class="notification-content">
-                                                                            <span class="notification-date">16 Sept</span>
-                                                                            <h2>Victor Jara</h2>
-                                                                            <p>Please done this project as soon possible.</p>
-                                                                        </div>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        <div class="notification-icon">
-                                                                            <i class="fa fa-line-chart adminpro-analytics-arrow" aria-hidden="true"></i>
-                                                                        </div>
-                                                                        <div class="notification-content">
-                                                                            <span class="notification-date">16 Sept</span>
-                                                                            <h2>Victor Jara</h2>
-                                                                            <p>Please done this project as soon possible.</p>
-                                                                        </div>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                            <div class="notification-view">
-                                                                <a href="#">View All Notification</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
                                                     <li class="nav-item">
                                                         <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="nav-link dropdown-toggle">
                                                             <i class="fa fa-user adminpro-user-rounded header-riht-inf" aria-hidden="true"></i>
@@ -313,392 +218,10 @@
                                                             </li>
                                                             <li><a href="#"><span class="fa fa-cog author-log-ic"></span>Settings</a>
                                                             </li>
-                                                            <li><a href="Login.jsp"><span class="fa fa-lock author-log-ic"></span>Log Out</a>
-                                                                <% session.removeAttribute("dataEmployee");%>
+                                                            <li><a class="Primary mg-b-10" href="#" data-toggle="modal" data-target="#PrimaryModalhdbgcl"><span class="fa fa-lock author-log-ic " href="#" data-toggle="modal" data-target="#PrimaryModalhdbgcl" name="logout"></span>Log Out</a>
+
                                                             </li>
                                                         </ul>
-                                                    </li>
-                                                    <li class="nav-item nav-setting-open"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="nav-link dropdown-toggle"><i class="fa fa-tasks"></i></a>
-
-                                                        <div role="menu" class="admintab-wrap menu-setting-wrap menu-setting-wrap-bg dropdown-menu animated zoomIn">
-                                                            <ul class="nav nav-tabs custon-set-tab">
-                                                                <li class="active"><a data-toggle="tab" href="#Notes">News</a>
-                                                                </li>
-                                                                <li><a data-toggle="tab" href="#Projects">Activity</a>
-                                                                </li>
-                                                                <li><a data-t
-                                                                       <li><a href="oggle="tab" href="#Settings">Settings</a>
-                                                                        </li>
-                                                            </ul>
-
-                                                            <div class="tab-content custom-bdr-nt">
-                                                                <div id="Notes" class="tab-pane fade in active">
-                                                                    <div class="notes-area-wrap">
-                                                                        <div class="note-heading-indicate">
-                                                                            <h2><i class="fa fa-comments-o"></i> Latest News</h2>
-                                                                            <p>You have 10 New News.</p>
-                                                                        </div>
-                                                                        <div class="notes-list-area notes-menu-scrollbar">
-                                                                            <ul class="notes-menu-list">
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="notes-list-flow">
-                                                                                            <div class="notes-img">
-                                                                                                <img src="img/contact/4.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="notes-content">
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more-or-less normal.</p>
-                                                                                                <span>Yesterday 2:45 pm</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="notes-list-flow">
-                                                                                            <div class="notes-img">
-                                                                                                <img src="img/contact/1.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="notes-content">
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more-or-less normal.</p>
-                                                                                                <span>Yesterday 2:45 pm</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="notes-list-flow">
-                                                                                            <div class="notes-img">
-                                                                                                <img src="img/contact/2.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="notes-content">
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more-or-less normal.</p>
-                                                                                                <span>Yesterday 2:45 pm</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="notes-list-flow">
-                                                                                            <div class="notes-img">
-                                                                                                <img src="img/contact/3.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="notes-content">
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more-or-less normal.</p>
-                                                                                                <span>Yesterday 2:45 pm</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="notes-list-flow">
-                                                                                            <div class="notes-img">
-                                                                                                <img src="img/contact/4.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="notes-content">
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more-or-less normal.</p>
-                                                                                                <span>Yesterday 2:45 pm</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="notes-list-flow">
-                                                                                            <div class="notes-img">
-                                                                                                <img src="img/contact/1.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="notes-content">
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more-or-less normal.</p>
-                                                                                                <span>Yesterday 2:45 pm</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="notes-list-flow">
-                                                                                            <div class="notes-img">
-                                                                                                <img src="img/contact/2.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="notes-content">
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more-or-less normal.</p>
-                                                                                                <span>Yesterday 2:45 pm</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="notes-list-flow">
-                                                                                            <div class="notes-img">
-                                                                                                <img src="img/contact/1.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="notes-content">
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more-or-less normal.</p>
-                                                                                                <span>Yesterday 2:45 pm</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="notes-list-flow">
-                                                                                            <div class="notes-img">
-                                                                                                <img src="img/contact/2.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="notes-content">
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more-or-less normal.</p>
-                                                                                                <span>Yesterday 2:45 pm</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="notes-list-flow">
-                                                                                            <div class="notes-img">
-                                                                                                <img src="img/contact/3.jpg" alt="" />
-                                                                                            </div>
-                                                                                            <div class="notes-content">
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more-or-less normal.</p>
-                                                                                                <span>Yesterday 2:45 pm</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                            </ul>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div id="Projects" class="tab-pane fade">
-                                                                    <div class="projects-settings-wrap">
-                                                                        <div class="note-heading-indicate">
-                                                                            <h2><i class="fa fa-cube"></i> Recent Activity</h2>
-                                                                            <p> You have 20 Recent Activity.</p>
-                                                                        </div>
-                                                                        <div class="project-st-list-area project-st-menu-scrollbar">
-                                                                            <ul class="projects-st-menu-list">
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="project-list-flow">
-                                                                                            <div class="projects-st-heading">
-                                                                                                <h2>New User Registered</h2>
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more or less normal.</p>
-                                                                                                <span class="project-st-time">1 hours ago</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="project-list-flow">
-                                                                                            <div class="projects-st-heading">
-                                                                                                <h2>New Order Received</h2>
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more or less normal.</p>
-                                                                                                <span class="project-st-time">2 hours ago</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="project-list-flow">
-                                                                                            <div class="projects-st-heading">
-                                                                                                <h2>New Order Received</h2>
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more or less normal.</p>
-                                                                                                <span class="project-st-time">3 hours ago</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="project-list-flow">
-                                                                                            <div class="projects-st-heading">
-                                                                                                <h2>New Order Received</h2>
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more or less normal.</p>
-                                                                                                <span class="project-st-time">4 hours ago</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="project-list-flow">
-                                                                                            <div class="projects-st-heading">
-                                                                                                <h2>New User Registered</h2>
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more or less normal.</p>
-                                                                                                <span class="project-st-time">5 hours ago</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="project-list-flow">
-                                                                                            <div class="projects-st-heading">
-                                                                                                <h2>New Order</h2>
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more or less normal.</p>
-                                                                                                <span class="project-st-time">6 hours ago</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="project-list-flow">
-                                                                                            <div class="projects-st-heading">
-                                                                                                <h2>New User</h2>
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more or less normal.</p>
-                                                                                                <span class="project-st-time">7 hours ago</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">
-                                                                                        <div class="project-list-flow">
-                                                                                            <div class="projects-st-heading">
-                                                                                                <h2>New Order</h2>
-                                                                                                <p> The point of using Lorem Ipsum is that it has a more or less normal.</p>
-                                                                                                <span class="project-st-time">9 hours ago</span>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                            </ul>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div id="Settings" class="tab-pane fade">
-                                                                    <div class="setting-panel-area">
-                                                                        <div class="note-heading-indicate">
-                                                                            <h2><i class="fa fa-gears"></i> Settings Panel</h2>
-                                                                            <p> You have 20 Settings. 5 not completed.</p>
-                                                                        </div>
-                                                                        <ul class="setting-panel-list">
-                                                                            <li>
-                                                                                <div class="checkbox-setting-pro">
-                                                                                    <div class="checkbox-title-pro">
-                                                                                        <h2>Show notifications</h2>
-                                                                                        <div class="ts-custom-check">
-                                                                                            <div class="onoffswitch">
-                                                                                                <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example">
-                                                                                                <label class="onoffswitch-label" for="example">
-                                                                                                    <span class="onoffswitch-inner"></span>
-                                                                                                    <span class="onoffswitch-switch"></span>
-                                                                                                </label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </li>
-                                                                            <li>
-                                                                                <div class="checkbox-setting-pro">
-                                                                                    <div class="checkbox-title-pro">
-                                                                                        <h2>Disable Chat</h2>
-                                                                                        <div class="ts-custom-check">
-                                                                                            <div class="onoffswitch">
-                                                                                                <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example3">
-                                                                                                <label class="onoffswitch-label" for="example3">
-                                                                                                    <span class="onoffswitch-inner"></span>
-                                                                                                    <span class="onoffswitch-switch"></span>
-                                                                                                </label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </li>
-                                                                            <li>
-                                                                                <div class="checkbox-setting-pro">
-                                                                                    <div class="checkbox-title-pro">
-                                                                                        <h2>Enable history</h2>
-                                                                                        <div class="ts-custom-check">
-                                                                                            <div class="onoffswitch">
-                                                                                                <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example4">
-                                                                                                <label class="onoffswitch-label" for="example4">
-                                                                                                    <span class="onoffswitch-inner"></span>
-                                                                                                    <span class="onoffswitch-switch"></span>
-                                                                                                </label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </li>
-                                                                            <li>
-                                                                                <div class="checkbox-setting-pro">
-                                                                                    <div class="checkbox-title-pro">
-                                                                                        <h2>Show charts</h2>
-                                                                                        <div class="ts-custom-check">
-                                                                                            <div class="onoffswitch">
-                                                                                                <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example7">
-                                                                                                <label class="onoffswitch-label" for="example7">
-                                                                                                    <span class="onoffswitch-inner"></span>
-                                                                                                    <span class="onoffswitch-switch"></span>
-                                                                                                </label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </li>
-                                                                            <li>
-                                                                                <div class="checkbox-setting-pro">
-                                                                                    <div class="checkbox-title-pro">
-                                                                                        <h2>Update everyday</h2>
-                                                                                        <div class="ts-custom-check">
-                                                                                            <div class="onoffswitch">
-                                                                                                <input type="checkbox" name="collapsemenu" checked="" class="onoffswitch-checkbox" id="example2">
-                                                                                                <label class="onoffswitch-label" for="example2">
-                                                                                                    <span class="onoffswitch-inner"></span>
-                                                                                                    <span class="onoffswitch-switch"></span>
-                                                                                                </label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </li>
-                                                                            <li>
-                                                                                <div class="checkbox-setting-pro">
-                                                                                    <div class="checkbox-title-pro">
-                                                                                        <h2>Global search</h2>
-                                                                                        <div class="ts-custom-check">
-                                                                                            <div class="onoffswitch">
-                                                                                                <input type="checkbox" name="collapsemenu" checked="" class="onoffswitch-checkbox" id="example6">
-                                                                                                <label class="onoffswitch-label" for="example6">
-                                                                                                    <span class="onoffswitch-inner"></span>
-                                                                                                    <span class="onoffswitch-switch"></span>
-                                                                                                </label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </li>
-                                                                            <li>
-                                                                                <div class="checkbox-setting-pro">
-                                                                                    <div class="checkbox-title-pro">
-                                                                                        <h2>Offline users</h2>
-                                                                                        <div class="ts-custom-check">
-                                                                                            <div class="onoffswitch">
-                                                                                                <input type="checkbox" name="collapsemenu" checked="" class="onoffswitch-checkbox" id="example5">
-                                                                                                <label class="onoffswitch-label" for="example5">
-                                                                                                    <span class="onoffswitch-inner"></span>
-                                                                                                    <span class="onoffswitch-switch"></span>
-                                                                                                </label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </li>
-                                                                        </ul>
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -724,11 +247,7 @@
                                                     <li><a href="index-3.html">Dashboard v.3</a></li>
                                                     <li><a href="product-list.html">Product List</a></li>
                                                     <li><a href="product-edit.html">Product Edit</a></li>
-                                                    <li><a href="product-detail.html">Product Detail</a></li>
-                                                    <li><a href="product-cart.html">Product Cart</a></li>
-                                                    <li><a href="product-payment.html">Product Payment</a></li>
-                                                    <li><a href="analytics.html">Analytics</a></li>
-                                                    <li><a href="widgets.html">Widgets</a></li>
+
                                                 </ul>
                                             </li>
                                             <li><a data-toggle="collapse" data-target="#demo" href="#">Mailbox <span class="admin-project-icon adminpro-icon adminpro-down-arrow"></span></a>
@@ -777,7 +296,148 @@
             </div>
 
             <div id="overtimeData"></div>
+            <div class="data-table-area mg-tb-15">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-lg-12">
+                                <div class="">
+                                    <div class="modal-area-button">
+                                        <!--<a class="Primary mg-b-10" href="#" data-toggle="modal" data-target="#PrimaryModalhdbgcl">Add New</a>-->
+                                    </div>
+                                </div>
+                            </div>
 
+                        </div>
+                    </div>
+
+
+                    <div class="sparkline13-list">
+                        <div class="sparkline13-hd">
+                            <div class="main-sparkline13-hd">
+                                <h1>Overtime <span class="table-project-n">Data</span> Table</h1>
+                            </div>
+                        </div><br><br><br>
+                        <div class="form-group-inner">
+                            <div class="row">
+                                <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
+                                    <label class="login2 pull-right pull-right-pro">Upload TimeSheet</label>
+                                </div>
+                                <div class="col-lg-11 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="file-upload-inner ts-forms">
+                                        <div class="input prepend-big-btn">
+                                            <label class="icon-right" for="prepend-big-btn">
+                                                <i class="fa fa-download"></i>
+                                            </label>
+                                            <div class="file-button">
+                                                Browse
+                                                <input type="file" onchange="document.getElementById('prepend-big-btn').value = this.value;">
+                                            </div>
+                                            <input type="text" id="prepend-big-btn" placeholder="no file selected">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sparkline13-graph">
+                            <div class="datatable-dashv1-list custom-datatable-overright">
+
+                                <table id="table" data-toggle="table" data-pagination="true" data-search="true" data-show-columns="true" data-show-pagination-switch="true" data-show-refresh="true" data-key-events="true" data-show-toggle="true" data-resizable="true" data-cookie="true"
+                                       data-cookie-id-table="saveId" data-show-export="true" data-click-to-select="true" data-toolbar="#toolbar">
+                                    <thead>
+                                        <tr>
+                                            <th data-field="state" data-checkbox="true"></th>
+                                            <th data-field="no">No</th>
+                                            <th data-field="presenceDate">Precence Date</th>
+                                            <th data-field="duration" data-editable="true">Duration</th>
+                                            <th data-field="fee" data-editable="true">fee</th>
+                                            <th data-field="status" data-editable="true">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%      String nikid = nik;
+                                            int no = 0;
+                                            PresenceControllerInterface pci = new PresenceController();
+                                            OvertimeControllerInterface oci = new OvertimeController();
+                                            for (Object pr : pci.search(nik)) {
+                                                Presence presence = (Presence) pr;
+                                                String idPresence = (presence.getPresenceId()).toString(); %>
+
+                                        <% for (Object ov : oci.search(idPresence)) {
+                                                Overtime overtime = (Overtime) ov;
+                                                no++;%>
+
+                                        <tr>
+                                            <td></td>
+                                            <td><%= no%></td>
+                                            <td><%= presence.getPresenceDate()%></td>
+                                            <td><%= overtime.getOtDuration()%></td>
+                                            <td><%= overtime.getFee()%></td>
+                                            <td><%= overtime.getStatus()%></td>
+                                            <% }
+                                                }%>
+
+
+                                    </tbody>
+                                </table>
+
+                                            <!--ini buat modal -->
+            <div id="PrimaryModalhdbgcl" class="modal modal-adminpro-general default-popup-PrimaryModal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header header-color-modal bg-color-1">
+                            <h4 class="modal-title">Overtime Form</h4>
+                            <div class="modal-close-area modal-close-df">
+                                <a class="close" data-dismiss="modal" href="#"><i class="fa fa-close"></i></a>
+                            </div>
+                        </div>
+                        <form method="POST" action="../logOut?nik=<%= nik%>">
+                            <div class="modal-body">
+
+                                <div class="form-group-inner">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-4 col-sm-3 col-xs-12">
+                                            <label class="login2">Description</label>
+                                        </div>
+                                        <div class="col-lg-9 col-md-8 col-sm-9 col-xs-12">
+                                            <textarea type="text" class="form-control" placeholder="Description" name="Description"></textarea>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group-inner">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                                            <label class="login2">duration</label>
+                                        </div>
+                                        <div class="col-lg-2 col-md-8 col-sm-8 col-xs-12 form-group-inner">
+                                            <input type="text" class="text-info form-control" placeholder="" name="durasi" value="<%= duration%>" readonly/> 
+                                        </div>
+                                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                                            <label class="login2">jam</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-custon-rounded-four btn-primary btn-lg" data-dismiss="modal" ">Cancel</button>
+                                    <button type="submit" class="btn btn-custon-rounded-four btn-primary btn-lg" id="ASD" name="" onclick="swal('Oops!', 'Something went wrong on the page!', 'error')">Save</button>
+                                    <button type="submit" class="btn btn-custon-rounded-four btn-primary btn-lg" id="ASD" name="" onclick="swal('Oops!', 'Something went wrong on the page!', 'error')">Later</button>
+                                </div>
+                                <!--                                <button type="submit" class="btn btn-default" id="ASD" name="" onclick="swal('Oops!', 'Something went wrong on the page!', 'error')">Save</button>
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--end modal-->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Static Table Start -->
             <!-- Static Table End -->
             <div class="footer-copyright-area">
@@ -859,6 +519,7 @@
         <!-- main JS
                     ============================================ -->
         <script src="js/main.js"></script>
+
     </body>
 
 </html>

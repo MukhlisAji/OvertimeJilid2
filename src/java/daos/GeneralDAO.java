@@ -5,6 +5,7 @@
  */
 package daos;
 
+import entities.Presence;
 import java.util.List;
 import org.hibernate.SessionFactory;
 
@@ -61,5 +62,25 @@ public class GeneralDAO implements DAOInterface {
     @Override
     public Object getMax(Object entities, Object field) {
          return this.fdao.getMax(entities, field);
+    }
+    
+        @Override
+    public Object getMaxPresence(Object entities, Object nik) {
+         return this.fdao.getMaxPresence(entities, nik);
+    }
+
+    @Override
+    public Object cekPresence(String nik, String date) {
+        return this.fdao.cekPresence(new Presence(), nik, date);
+    }
+
+    @Override
+    public List<Object> duplicatManagerId(Object entities) {
+        return this.fdao.duplicatManagerId(entities);
+    }
+
+    @Override
+    public List<Object> byNikAndDate(Object Nik, Object mounth) {
+        return this.fdao.byNikAndDate(Nik, mounth);
     }
 }

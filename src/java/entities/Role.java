@@ -8,7 +8,6 @@ package entities;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -45,7 +44,7 @@ public class Role implements Serializable {
     @Basic(optional = false)
     @Column(name = "isDelete")
     private int isDelete;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roleId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "roleId", fetch = FetchType.LAZY)
     private List<Employee> employeeList;
 
     public Role() {
@@ -60,7 +59,7 @@ public class Role implements Serializable {
         this.roleName = roleName;
         this.isDelete = isDelete;
     }
-
+    
     public Integer getRoleId() {
         return roleId;
     }

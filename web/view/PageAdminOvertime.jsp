@@ -4,8 +4,8 @@
     Author     : tikamhrdk
 --%>
 
-<%@page import="entities.Overtime"%>
 <%@page import="controllers.OvertimeController"%>
+<%@page import="entities.Overtime"%>
 <%@page import="controllers.OvertimeControllerInterface"%>
 <%@page import="daos.GeneralDAO"%>
 <%@page import="daos.DAOInterface"%>
@@ -149,9 +149,9 @@
                             <li>
                                 <a class="has-arrow" href="mailbox.html" aria-expanded="false"><i class="fa big-icon fa-envelope icon-wrap"></i> <span class="mini-click-non">Employee</span></a>
                                 <ul class="submenu-angle" aria-expanded="false">
-                                    <li><a title="Inbox" href="mailbox.html"><i class="fa fa-inbox sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Profile</span></a></li>
-                                    <li><a title="View Mail" href="view/PageAdminEmployee.jsp"><i class="fa fa-television sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Presence</span></a></li>
-                                    <li><a id="overtimes" title="overtime data"><i class="fa fa-paper-plane sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro" >Overtime</span></a></li>
+                                    <li><a title="Profil Emloyee" href="PageAdmin.jsp"><i class="fa fa-inbox sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Profile Employee</span></a></li>
+                                    <li><a title="Data Presence" href="PageAdminPresence.jsp"><i class="fa fa-television sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Presence</span></a></li>
+                                    <li><a id="overtimes" href="PageAdminOvertime.jsp" title="Data overtime"><i class="fa fa-paper-plane sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro" >Overtime</span></a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -242,7 +242,7 @@
                             <div class="mobile-menu">
                                 <nav id="dropdown">
                                     <ul class="mobile-menu-nav">
-                                        <li><a data-toggle="collapse" data-target="#Charts" href="#">Overtime <span class="admin-project-icon adminpro-icon adminpro-down-arrow"></span></a>
+                                        <li><a data-toggle="collapse" data-target="#Charts" href="#">Employee <span class="admin-project-icon adminpro-icon adminpro-down-arrow"></span></a>
                                             <ul class="collapse dropdown-header-top">
                                                 <li><a href="index.html">Dashboard v.1</a></li>
                                                 <li><a href="index-1.html">Dashboard v.2</a></li>
@@ -267,51 +267,31 @@
         <div id="overtimeData"></div>
 
         <!-- Static Table Start -->
-        <br><br><br>
-        <form method="POST" class="form-group" action="../byDate">
-            <div class="form-group-inner">
-                <div class="row">
-                    <div class="col-lg-1 col-md-1 col-sm-3 col-xs-12">
-                        <label class="login2 pull-right pull-right-pro">NIK</label>
-                    </div>
-                    <div class="col-lg-3 col-md-9 col-sm-9 col-xs-12">
-                        <input type="text" class="form-control" name="nik"/>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group-inner">
-                <div class="row">
-                    <div class="col-lg-1 col-md-1 col-sm-3 col-xs-12">
-                        <label class="login2 pull-right pull-right-pro">Date</label>
-                    </div>
-                    <div class="col-lg-3 col-md-9 col-sm-9 col-xs-12">
-                        <input type="text" class="form-control" name="date"/>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group-inner">
-                <div class="row">
-                    <div class="col-lg-1 col-md-1 col-sm-3 col-xs-12">
-                        <label class="login2 pull-right pull-right-pro"></label>
-                    </div>
-                    <div class="col-lg-1 col-md-9 col-sm-9 col-xs-12">
-                        <button class="btn btn-custon-rounded-four btn-primary btn-md" type="submit" ">show</button>
-                    </div>
-                </div>
-            </div>
-
-        </form>
         <!-- Static Table Start -->
         <div class="data-table-area mg-tb-15">
             <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-lg-12">
+                            <div class="">
+                                <div class="modal-area-button">
+                                    <!--<a class="Primary mg-b-10" href="#" data-toggle="modal" data-target="#PrimaryModalhdbgcl">Add New</a>-->
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
                 <div class="sparkline13-list">
                     <div class="sparkline13-hd">
                         <div class="main-sparkline13-hd">
-                            <h1>Employees <span class="table-project-n">Data</span> Table</h1>
+                            <h1>Presence <span class="table-project-n">Data</span> Table</h1>
                         </div>
                     </div>
                     <div class="sparkline13-graph">
                         <div class="datatable-dashv1-list custom-datatable-overright">
+                            <div style="height: 900px">
 
                             <table id="table" data-toggle="table" data-pagination="true" data-search="true" data-show-columns="true" data-show-pagination-switch="true" data-show-refresh="true" data-key-events="true" data-show-toggle="true" data-resizable="true" data-cookie="true"
                                    data-cookie-id-table="saveId" data-show-export="true" data-click-to-select="true" data-toolbar="#toolbar">
@@ -324,12 +304,13 @@
                                         <th data-field="Duration" data-editable="true">Duration</th>
                                         <th data-field="Fee" data-editable="true">Fee</th>
                                         <th data-field="Status" data-editable="true">Status</th>
+                                        <th data-field="File" data-editable="true">Timesheet</th>
                                         <th data-field="action">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <%SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-
+                                        DAOInterface daoi = new GeneralDAO(sessionFactory);
                                         OvertimeControllerInterface oci = new OvertimeController(sessionFactory);
                                         int nomer = 0;
                                         for (Object object : oci.getAlls()) {
@@ -344,6 +325,7 @@
                                         <td><%= o.getOtDuration()%></td>
                                         <td><%= o.getFee()%></td>
                                         <td><%= o.getStatus()%></td>
+                                        <td><%= o.getTsFile()%></td>
                                         <td class="datatable-ct"><i class="fa fa-check"></i>
                                     </tr>
 
@@ -352,7 +334,29 @@
                                     %>
                                 </tbody>
                             </table>
+                            </div>
+                            <!-- Modal -->
+                            <div id="EditData" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- konten modal-->
+                                    <div class="modal-content">
+                                        <!-- heading modal -->
+                                        <div class="modal-header">
 
+                                            <h4 class="modal-title">Edit Data</h4>
+                                        </div>
+                                        <!-- body modal -->
+                                        <div class="modal-body">
+
+                                            <div id="detail">  
+
+                                            </div>
+                                        </div>
+                                        <!-- footer modal -->
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -461,4 +465,7 @@
 </body>
 
 </html>
+
+
+
 

@@ -73,7 +73,7 @@ public class Employee implements Serializable {
     @Column(name = "isDelete")
     private boolean isDelete;
     @JoinColumn(name = "roleId", referencedColumnName = "roleId")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Role roleId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "managerId", fetch = FetchType.LAZY)
     private List<Employee> employeeList;
@@ -112,7 +112,6 @@ public class Employee implements Serializable {
         this.roleId = roleId;
         this.managerId = managerId;
     }
-    
     
 
     public String getNik() {

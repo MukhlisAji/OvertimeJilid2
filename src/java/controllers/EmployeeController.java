@@ -105,4 +105,10 @@ public class EmployeeController implements EmployeeControllerInterface {
         Employee e = new Employee();
         return daoi.getMax(e, field);
     }
+
+    @Override
+    public List<Object> duplicatManagerId() {
+        Employee e = new Employee();
+        return daoi.duplicatManagerId(e);
+}
 }

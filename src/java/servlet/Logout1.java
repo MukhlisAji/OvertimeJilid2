@@ -14,7 +14,6 @@ import entities.Presence;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
-import javax.mail.Session;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,8 +27,8 @@ import tools.HibernateUtil;
  *
  * @author Mukhlish
  */
-@WebServlet(name = "logOut", urlPatterns = {"/logOut"})
-public class logOut extends HttpServlet {
+@WebServlet(name = "Logout1", urlPatterns = {"/Logout1"})
+public class Logout1 extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,7 +40,7 @@ public class logOut extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+           throws ServletException, IOException {
         response.setContentType("text/html");
         PrintWriter pw = response.getWriter();
         pw.println("<HTML><BODY>");
@@ -51,9 +50,7 @@ public class logOut extends HttpServlet {
         SessionFactory factory = HibernateUtil.getSessionFactory();
         DAOInterface daoi = new GeneralDAO(factory);
         String nik = request.getParameter("nik");
-        String deskripsi = request.getParameter("Description");
-        String durasi = request.getParameter("durasi");
-        // print out the session id
+        
         if (theSession != null) {
             pw.println("<BR>Session Id: " + theSession.getId());
             synchronized (theSession) {
@@ -67,24 +64,13 @@ public class logOut extends HttpServlet {
                 autoPresence presence = new autoPresence();
                 System.out.println(cekP);
 
-                OvertimeControllerInterface oci = new OvertimeController(factory);
-                autoPresence p = new autoPresence();
-                String dur = String.valueOf(p.Fee(durasi, nik));
-                String id = String.valueOf(daoi.getMaxPresence(new Presence(), nik));
-                oci.insert("", durasi, dur, "request", "", deskripsi, id);
+             
 
                 if (cekP != null) {
-//                    System.out.println("bbb");
 
-//            pci.insert("", "18
-//             pci.update("8", "18:18", "12.14", "12/12/2018", "14411");
-//            presence.absen("14411", false);
-                    //   prese:18", null, "12/12/2018", "14411");
                     presence.absen(nik, false);
                 } else {
-//             pci.update("8", "18:18", "12.14", "12/12/2018", "14411");
-//            presence.absen("14411", false);
-                    //   presence.absen("14413", false);
+
                     presence.absen(nik, true);
 
                 }
@@ -94,12 +80,9 @@ public class logOut extends HttpServlet {
         }
 
         response.sendRedirect("view/Login.jsp");
-//
-//        pw.println("</BODY></HTML>");
-//        pw.close();
     }
 
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

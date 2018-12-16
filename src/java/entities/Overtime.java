@@ -52,7 +52,6 @@ public class Overtime implements Serializable {
     @Basic(optional = false)
     @Column(name = "status")
     private String status;
-    @Basic(optional = false)
     @Lob
     @Column(name = "tsFile")
     private byte[] tsFile;
@@ -70,6 +69,14 @@ public class Overtime implements Serializable {
         this.overtimeId = overtimeId;
     }
 
+    public Overtime(Integer overtimeId, int otDuration, int fee, String status, String description) {
+        this.overtimeId = overtimeId;
+        this.otDuration = otDuration;
+        this.fee = fee;
+        this.status = status;
+        this.description = description;
+    }
+
     public Overtime(Integer overtimeId, int otDuration, int fee, String status, byte[] tsFile, String description, Presence presenceId) {
         this.overtimeId = overtimeId;
         this.otDuration = otDuration;
@@ -79,7 +86,6 @@ public class Overtime implements Serializable {
         this.description = description;
         this.presenceId = presenceId;
     }
-
 
     public Integer getOvertimeId() {
         return overtimeId;

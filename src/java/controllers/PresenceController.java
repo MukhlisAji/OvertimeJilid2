@@ -69,11 +69,11 @@ public class PresenceController implements PresenceControllerInterface {
     @Override
     public boolean insert(String presenceId, String checkIn, String checkOut, String presenceDate, String nik) {
         try {
-            int preId = Integer.parseInt(presenceId);
+            //int preId = Integer.parseInt(presenceId);
             DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
             Date dates = format.parse(presenceDate);
             Employee Nik = new Employee(nik);
-            Presence presence = new Presence(preId, checkIn, checkOut, dates, Nik);
+            Presence presence = new Presence(null, checkIn, checkOut, dates, Nik);
             if (daoi.doDML(presence, false)) {
                 return true;
             }

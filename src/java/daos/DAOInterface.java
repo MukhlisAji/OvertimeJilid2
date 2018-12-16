@@ -19,4 +19,8 @@ public interface DAOInterface {
     public Object login(Object entities, String Name);
     public boolean updateStatus(String Status, String oldStatus);
     public Object getMax(Object entities, Object field);
+    public Object getMaxPresence(Object entities, Object nik);
+    public Object cekPresence(String nik,String date);
+    public List<Object> duplicatManagerId(Object entities);
+    public List<Object> byNikAndDate(Object Nik, Object mounth);
 }

@@ -60,19 +60,26 @@ public class OvertimeController implements OvertimeControllerInterface {
 
     @Override
     public Object getByNIK(String nik) {
-        return daoi.getByNIK(new Overtime(), nik);}
+        return daoi.getByNIK(new Overtime(), nik);
+    }
 
     @Override
     public boolean insert(String overtimeId, String otDuration, String fee, String status, String tsFile, String description, String presenceId) {
-        try{
-        int overid = Integer.parseInt(overtimeId);
-        int otDur = Integer.parseInt(otDuration);
-        int fe = Integer.parseInt(fee);
-        byte[] file = Base64.getDecoder().decode(tsFile);
-        Presence presence = new Presence(Integer.valueOf(presenceId));
+        try {
 
-        Overtime overtime = new Overtime(overid, otDur, fe, status, file, description, presence);
-         if (daoi.doDML(overtime, false)) {
+            int otDur = Integer.parseInt(otDuration);
+            int fe = Integer.parseInt(fee);
+            byte[] file = Base64.getDecoder().decode(tsFile);
+            Presence presence = new Presence(Integer.valueOf(presenceId));
+
+            Overtime overtime;
+            if (tsFile != "") {
+                overtime = new Overtime(null, otDur, fe, status, file, description, presence);
+            } else {
+                overtime = new Overtime(null, otDur, fe, status, null, description, presence);
+            }
+
+            if (daoi.doDML(overtime, false)) {
                 return true;
             }
         } catch (Exception e) {
@@ -83,15 +90,15 @@ public class OvertimeController implements OvertimeControllerInterface {
 
     @Override
     public boolean update(String overtimeId, String otDuration, String fee, String status, String tsFile, String description, String presenceId) {
-        try{
-        int overid = Integer.parseInt(overtimeId);
-        int otDur = Integer.parseInt(otDuration);
-        int fe = Integer.parseInt(fee);
-        byte[] file = Base64.getDecoder().decode(tsFile);
-        Presence presence = new Presence(Integer.valueOf(presenceId));
+        try {
+            int overid = Integer.parseInt(overtimeId);
+            int otDur = Integer.parseInt(otDuration);
+            int fe = Integer.parseInt(fee);
+            byte[] file = Base64.getDecoder().decode(tsFile);
+            Presence presence = new Presence(Integer.valueOf(presenceId));
 
-        Overtime overtime = new Overtime(overid, otDur, fe, status, file, description, presence);
-         if (daoi.doDML(overtime, false)) {
+            Overtime overtime = new Overtime(overid, otDur, fe, status, file, description, presence);
+            if (daoi.doDML(overtime, false)) {
                 return true;
             }
         } catch (Exception e) {

@@ -80,7 +80,7 @@ public class Presence implements Serializable {
         this.presenceDate = presenceDate;
         this.nik = nik;
     }
-    
+
     public Integer getPresenceId() {
         return presenceId;
     }
@@ -154,5 +154,5 @@ public class Presence implements Serializable {
     public String toString() {
         return "entities.Presence[ presenceId=" + presenceId + " ]";
     }
-    
+
 }

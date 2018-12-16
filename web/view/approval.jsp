@@ -1,12 +1,13 @@
 <%-- 
-    Document   : PageAdmin
-    Created on : Dec 15, 2018, 7:39:59 AM
-    Author     : tikamhrdk
+    Document   : approval
+    Created on : Dec 16, 2018, 8:03:49 PM
+    Author     : Mukhlish
 --%>
 
+<%@page import="javax.mail.Session"%>
+<%@page import="java.util.List"%>
 <%@page import="entities.Overtime"%>
-<%@page import="controllers.OvertimeController"%>
-<%@page import="controllers.OvertimeControllerInterface"%>
+<%@page import="entities.Presence"%>
 <%@page import="daos.GeneralDAO"%>
 <%@page import="daos.DAOInterface"%>
 <%@page import="controllers.RoleIdController"%>
@@ -149,9 +150,9 @@
                             <li>
                                 <a class="has-arrow" href="mailbox.html" aria-expanded="false"><i class="fa big-icon fa-envelope icon-wrap"></i> <span class="mini-click-non">Employee</span></a>
                                 <ul class="submenu-angle" aria-expanded="false">
-                                    <li><a title="Inbox" href="mailbox.html"><i class="fa fa-inbox sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Profile</span></a></li>
-                                    <li><a title="View Mail" href="view/PageAdminEmployee.jsp"><i class="fa fa-television sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Presence</span></a></li>
-                                    <li><a id="overtimes" title="overtime data"><i class="fa fa-paper-plane sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro" >Overtime</span></a></li>
+                                    <li><a title="Profil Emloyee" href="PageAdmin.jsp"><i class="fa fa-inbox sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Profile Employee</span></a></li>
+                                    <li><a title="Data Presence" href="PageAdminPresence.jsp"><i class="fa fa-television sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro">Presence</span></a></li>
+                                    <li><a id="overtimes" href="PageAdminOvertime.jsp" title="Data overtime"><i class="fa fa-paper-plane sub-icon-mg" aria-hidden="true"></i> <span class="mini-sub-pro" >Overtime</span></a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -242,7 +243,7 @@
                             <div class="mobile-menu">
                                 <nav id="dropdown">
                                     <ul class="mobile-menu-nav">
-                                        <li><a data-toggle="collapse" data-target="#Charts" href="#">Overtime <span class="admin-project-icon adminpro-icon adminpro-down-arrow"></span></a>
+                                        <li><a data-toggle="collapse" data-target="#Charts" href="#">Employee <span class="admin-project-icon adminpro-icon adminpro-down-arrow"></span></a>
                                             <ul class="collapse dropdown-header-top">
                                                 <li><a href="index.html">Dashboard v.1</a></li>
                                                 <li><a href="index-1.html">Dashboard v.2</a></li>
@@ -294,14 +295,15 @@
                     <div class="col-lg-1 col-md-1 col-sm-3 col-xs-12">
                         <label class="login2 pull-right pull-right-pro"></label>
                     </div>
-                    <div class="col-lg-1 col-md-9 col-sm-9 col-xs-12">
-                        <button class="btn btn-custon-rounded-four btn-primary btn-md" type="submit" ">show</button>
+                    <div class="col-lg-3 col-md-9 col-sm-9 col-xs-12">
+                        <button class="btn btn-custon-rounded-four btn-primary btn-md" type="suubmit" >show</button>
+
                     </div>
                 </div>
             </div>
 
         </form>
-        <!-- Static Table Start -->
+
         <div class="data-table-area mg-tb-15">
             <div class="container-fluid">
                 <div class="sparkline13-list">
@@ -312,7 +314,6 @@
                     </div>
                     <div class="sparkline13-graph">
                         <div class="datatable-dashv1-list custom-datatable-overright">
-
                             <table id="table" data-toggle="table" data-pagination="true" data-search="true" data-show-columns="true" data-show-pagination-switch="true" data-show-refresh="true" data-key-events="true" data-show-toggle="true" data-resizable="true" data-cookie="true"
                                    data-cookie-id-table="saveId" data-show-export="true" data-click-to-select="true" data-toolbar="#toolbar">
                                 <thead>
@@ -320,145 +321,143 @@
                                         <th data-field="state" data-checkbox="true"></th>
                                         <th data-field="no">No</th>
                                         <th data-field="OvertimeId">ID</th>
-                                        <th data-field="PresenceId" data-editable="true">Presence Id</th>
-                                        <th data-field="Duration" data-editable="true">Duration</th>
-                                        <th data-field="Fee" data-editable="true">Fee</th>
-                                        <th data-field="Status" data-editable="true">Status</th>
+                                        <th data-field="CheckIn" >Check In</th>
+                                        <th data-field="CheckOut" >Check Out</th>
+                                        <th data-field="Duration" >Duration</th>
+                                        <th data-field="Fee" >Fee</th>
+                                        <th data-field="Status" >Status</th>
+                                        <th data-field="File" >Timesheet</th>
                                         <th data-field="action">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <%SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-
-                                        OvertimeControllerInterface oci = new OvertimeController(sessionFactory);
+                                    <%
                                         int nomer = 0;
-                                        for (Object object : oci.getAlls()) {
-                                            Overtime o = (Overtime) object;
-                                            nomer++;
+                                        if (session.getAttribute("isiPresence") != null) {
+                                            Presence p = (Presence) session.getAttribute("isiPresence");
+                                            List<Overtime> list1 = p.getOvertimeList();
+                                            Overtime ov = null;
+                                            for (int j = 0; j < list1.size(); j++) {
+                                                ov = list1.get(j);
+                                                System.out.println(ov.getOvertimeId() + " = " + ov.getOtDuration());
+
                                     %>
+
                                     <tr>
                                         <td></td>
-                                        <td><%= nomer%></td>
-                                        <td><%= o.getOvertimeId().toString()%></td>
-                                        <td><%= o.getPresenceId().getPresenceId()%></td>
-                                        <td><%= o.getOtDuration()%></td>
-                                        <td><%= o.getFee()%></td>
-                                        <td><%= o.getStatus()%></td>
-                                        <td class="datatable-ct"><i class="fa fa-check"></i>
+                                        <td><%= nomer++%></td>
+                                        <td><%= ov.getOvertimeId()%></td>
+                                        <td><%= ov.getPresenceId().getCheckIn()%></td>
+                                        <td><%= ov.getPresenceId().getCheckOut()%></td>
+                                        <td><%= ov.getOtDuration()%></td>
+                                        <td><%= ov.getFee()%></td>
+                                        <td><%= ov.getStatus()%></td>
+                                        <td><%= ov.getTsFile()%></td>
+                                        <td> <a href="../updateOT?id=<%= ov.getOvertimeId()%>" class="btn btn-info">Approve</a></td>
                                     </tr>
 
 
-                                    <% }
+                                    <%
+                                            }
+                                        } else {
+
+                                        }
+                                     
                                     %>
+
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Static Table End -->
-        <div class="footer-copyright-area">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="footer-copy-right">
-                            <p>Copyright © 2018 <a href="https://colorlib.com/wp/templates/">Colorlib</a> All rights reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- jquery
-                ============================================ -->
-    <script src="js/vendor/jquery-1.11.3.min.js"></script>
-    <!-- bootstrap JS
-                ============================================ -->
-    <script src="js/bootstrap.min.js"></script>
-    <!-- wow JS
-                ============================================ -->
-    <script src="js/wow.min.js"></script>
-    <!-- price-slider JS
-                ============================================ -->
-    <script src="js/jquery-price-slider.js"></script>
-    <!-- meanmenu JS
-                ============================================ -->
-    <script src="js/jquery.meanmenu.js"></script>
-    <!-- owl.carousel JS
-                ============================================ -->
-    <script src="js/owl.carousel.min.js"></script>
-    <!-- sticky JS
-                ============================================ -->
-    <script src="js/jquery.sticky.js"></script>
-    <!-- scrollUp JS
-                ============================================ -->
-    <script src="js/jquery.scrollUp.min.js"></script>
-    <!-- mCustomScrollbar JS
-                ============================================ -->
-    <script src="js/scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
-    <script src="js/scrollbar/mCustomScrollbar-active.js"></script>
-    <!-- metisMenu JS
-                ============================================ -->
-    <script src="js/metisMenu/metisMenu.min.js"></script>
-    <script src="js/metisMenu/metisMenu-active.js"></script>
-    <!-- data table JS
-                ============================================ -->
-    <script src="js/data-table/bootstrap-table.js"></script>
-    <script src="js/data-table/tableExport.js"></script>
-    <script src="js/data-table/data-table-active.js"></script>
-    <script src="js/data-table/bootstrap-table-editable.js"></script>
-    <script src="js/data-table/bootstrap-editable.js"></script>
-    <script src="js/data-table/bootstrap-table-resizable.js"></script>
-    <script src="js/data-table/colResizable-1.5.source.js"></script>
-    <script src="js/data-table/bootstrap-table-export.js"></script>
-    <!--  editable JS
-                ============================================ -->
-    <script src="js/editable/jquery.mockjax.js"></script>
-    <script src="js/editable/mock-active.js"></script>
-    <script src="js/editable/select2.js"></script>
-    <script src="js/editable/moment.min.js"></script>
-    <script src="js/editable/bootstrap-datetimepicker.js"></script>
-    <script src="js/editable/bootstrap-editable.js"></script>
-    <script src="js/editable/xediable-active.js"></script>
-    <!-- Chart JS
-                ============================================ -->
-    <script src="js/chart/jquery.peity.min.js"></script>
-    <script src="js/peity/peity-active.js"></script>
-    <!-- tab JS
-                ============================================ -->
-    <script src="js/tab.js"></script>
-    <!-- plugins JS
-                ============================================ -->
-    <script src="js/plugins.js"></script>
-    <!-- main JS
-                ============================================ -->
-    <script src="js/main.js"></script>
-    <!-- morrisjs JS
-           ============================================ -->
-    <script src="js/sparkline/jquery.sparkline.min.js"></script>
-    <script src="js/sparkline/jquery.charts-sparkline.js"></script>
-    <!-- calendar JS
-                ============================================ -->
-    <script src="js/calendar/moment.min.js"></script>
-    <script src="js/calendar/fullcalendar.min.js"></script>
-    <script src="js/calendar/fullcalendar-active.js"></script>
-    <!-- datapicker JS
-                   ============================================ -->
-    <script src="js/datapicker/bootstrap-datepicker.js"></script>
-    <script src="js/datapicker/datepicker-active.js"></script>
-    <!-- input-mask JS
+        <!-- jquery
                     ============================================ -->
-    <script src="js/input-mask/jasny-bootstrap.min.js"></script>
-    <!-- select2 JS
+        <script src="js/vendor/jquery-1.11.3.min.js"></script>
+        <!-- bootstrap JS
                     ============================================ -->
-    <script src="js/select2/select2.full.min.js"></script>
-    <script src="js/select2/select2-active.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <!-- wow JS
+                    ============================================ -->
+        <script src="js/wow.min.js"></script>
+        <!-- price-slider JS
+                    ============================================ -->
+        <script src="js/jquery-price-slider.js"></script>
+        <!-- meanmenu JS
+                    ============================================ -->
+        <script src="js/jquery.meanmenu.js"></script>
+        <!-- owl.carousel JS
+                    ============================================ -->
+        <script src="js/owl.carousel.min.js"></script>
+        <!-- sticky JS
+                    ============================================ -->
+        <script src="js/jquery.sticky.js"></script>
+        <!-- scrollUp JS
+                    ============================================ -->
+        <script src="js/jquery.scrollUp.min.js"></script>
+        <!-- mCustomScrollbar JS
+                    ============================================ -->
+        <script src="js/scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+        <script src="js/scrollbar/mCustomScrollbar-active.js"></script>
+        <!-- metisMenu JS
+                    ============================================ -->
+        <script src="js/metisMenu/metisMenu.min.js"></script>
+        <script src="js/metisMenu/metisMenu-active.js"></script>
+        <!-- data table JS
+                    ============================================ -->
+        <script src="js/data-table/bootstrap-table.js"></script>
+        <script src="js/data-table/tableExport.js"></script>
+        <script src="js/data-table/data-table-active.js"></script>
+        <script src="js/data-table/bootstrap-table-editable.js"></script>
+        <script src="js/data-table/bootstrap-editable.js"></script>
+        <script src="js/data-table/bootstrap-table-resizable.js"></script>
+        <script src="js/data-table/colResizable-1.5.source.js"></script>
+        <script src="js/data-table/bootstrap-table-export.js"></script>
+        <!--  editable JS
+                    ============================================ -->
+        <script src="js/editable/jquery.mockjax.js"></script>
+        <script src="js/editable/mock-active.js"></script>
+        <script src="js/editable/select2.js"></script>
+        <script src="js/editable/moment.min.js"></script>
+        <script src="js/editable/bootstrap-datetimepicker.js"></script>
+        <script src="js/editable/bootstrap-editable.js"></script>
+        <script src="js/editable/xediable-active.js"></script>
+        <!-- Chart JS
+                    ============================================ -->
+        <script src="js/chart/jquery.peity.min.js"></script>
+        <script src="js/peity/peity-active.js"></script>
+        <!-- tab JS
+                    ============================================ -->
+        <script src="js/tab.js"></script>
+        <!-- plugins JS
+                    ============================================ -->
+        <script src="js/plugins.js"></script>
+        <!-- main JS
+                    ============================================ -->
+        <script src="js/main.js"></script>
+        <!-- morrisjs JS
+               ============================================ -->
+        <script src="js/sparkline/jquery.sparkline.min.js"></script>
+        <script src="js/sparkline/jquery.charts-sparkline.js"></script>
+        <!-- calendar JS
+                    ============================================ -->
+        <script src="js/calendar/moment.min.js"></script>
+        <script src="js/calendar/fullcalendar.min.js"></script>
+        <script src="js/calendar/fullcalendar-active.js"></script>
+        <!-- datapicker JS
+                       ============================================ -->
+        <script src="js/datapicker/bootstrap-datepicker.js"></script>
+        <script src="js/datapicker/datepicker-active.js"></script>
+        <!-- input-mask JS
+                        ============================================ -->
+        <script src="js/input-mask/jasny-bootstrap.min.js"></script>
+        <!-- select2 JS
+                        ============================================ -->
+        <script src="js/select2/select2.full.min.js"></script>
+        <script src="js/select2/select2-active.js"></script>
 </body>
 
 </html>
+
 
